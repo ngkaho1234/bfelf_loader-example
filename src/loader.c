@@ -118,6 +118,7 @@ int main(int argc, char** argv, char** envp)
 	if (bfelf_loader_resolve_symbol(&elf_loader, &entry_string, &addr) != BFELF_SUCCESS) {
 		ret = 1;
 		fprintf(stderr, "Failed to resolve symbol.\n");
+		goto out;
 	}
 	entry = addr;
 	printf("Num: %d\n", entry());
