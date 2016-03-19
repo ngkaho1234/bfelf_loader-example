@@ -905,16 +905,22 @@ private_relocate_symbol(struct bfelf_loader_t *loader,
             return ret;
     }
 
-    *ptr = (bfelf64_addr)(found_ef->exec + found_sym->st_value);
+    /* Assign load address first. */
+    *ptr = (bfelf64_addr)(found_ef->exec);
 
     switch (BFELF_REL_TYPE(rela->r_info))
     {
-        case BFR_X86_64_64:
+        case BFR_X86_64_RELATIVE:
             *ptr += (bfelf64_addr)(rela->r_addend);
+            break;
+
+        case BFR_X86_64_64:
+            *ptr += (bfelf64_addr)(found_sym->st_value + rela->r_addend);
             break;
 
         case BFR_X86_64_GLOB_DAT:
         case BFR_X86_64_JUMP_SLOT:
+            *ptr += (bfelf64_addr)(found_sym->st_value);
             break;
 
         default:
